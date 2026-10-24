@@ -1,0 +1,1994 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFTER THE LIMIT. — Mathematics Practice</title>
+
+<style>
+/* =====================================
+   1. GLOBAL STYLE
+===================================== */
+:root {
+  --black: #080909;
+  --panel: #111313;
+  --panel2: #171919;
+  --yellow: #f4d34f;
+  --cream: #f1eee4;
+  --muted: #92958e;
+  --line: rgba(244,211,79,.22);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+body::selection {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+button, a, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.eyebrow {
+  color: var(--yellow);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.yellow {
+  color: var(--yellow);
+}
+
+.wrap {
+  width: min(1120px, 90%);
+  margin: auto;
+}
+
+section {
+  position: relative;
+}
+
+/* =====================================
+   2. CURSOR & FLOATING DECORATIONS
+===================================== */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--yellow);
+}
+
+.cursor-ring {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(244,211,79,.7);
+  transition: width .2s, height .2s;
+}
+
+.float-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.float-symbol {
+  position: absolute;
+  color: rgba(244,211,79,.13);
+  animation: floatAround linear infinite;
+  font-family: Georgia, serif;
+  user-select: none;
+}
+
+@keyframes floatAround {
+  0% { transform: translateY(110vh) rotate(0deg); }
+  100% { transform: translateY(-15vh) rotate(360deg); }
+}
+
+/* =====================================
+   3. FALLING FORMULAS
+===================================== */
+#formulaRain {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+body.formula-active #formulaRain {
+  opacity: 1;
+}
+
+.falling-formula {
+  position: absolute;
+  top: -100px;
+  color: rgba(244,211,79,.46);
+  white-space: nowrap;
+  font-family: Georgia, serif;
+  text-shadow: 0 0 14px rgba(244,211,79,.12);
+  animation: formulaFall linear forwards;
+  user-select: none;
+}
+
+@keyframes formulaFall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(-12deg);
+    opacity: 0;
+  }
+  10% { opacity: .85; }
+  85% { opacity: .6; }
+  100% {
+    transform: translate3d(45px, 115vh, 0) rotate(18deg);
+    opacity: 0;
+  }
+}
+
+/* =====================================
+   4. EXAM / TKA PAGE
+===================================== */
+#exam {
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+
+.topbar {
+  min-height: 70px;
+  padding: 20px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.brand {
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.brand span {
+  color: var(--yellow);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #a5d98b;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.exam-hero {
+  padding: 85px 0 45px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 50px;
+  align-items: end;
+}
+
+.exam-title {
+  font-size: clamp(52px, 10vw, 120px);
+  line-height: .88;
+  letter-spacing: -7px;
+  text-transform: uppercase;
+  font-weight: 900;
+  margin: 22px 0;
+}
+
+.exam-title span {
+  color: var(--yellow);
+  display: block;
+}
+
+.hero-description {
+  max-width: 400px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
+  margin-top: 25px;
+}
+
+.stat-number {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.stat-label {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-top: 7px;
+}
+
+.math-decoration {
+  min-height: 245px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(rgba(244,211,79,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,211,79,.04) 1px, transparent 1px),
+    #0e1010;
+  background-size: 28px 28px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+}
+
+.math-decoration::after {
+  content: "∫";
+  position: absolute;
+  right: 18px;
+  bottom: -48px;
+  font-family: Georgia, serif;
+  font-size: 200px;
+  color: rgba(244,211,79,.08);
+}
+
+.decor-formula {
+  font-family: Georgia, serif;
+  font-size: clamp(16px, 2vw, 23px);
+  color: var(--yellow);
+  position: relative;
+  z-index: 1;
+}
+
+.decor-small {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.exam-content {
+  padding: 35px 0 100px;
+}
+
+.section-line {
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 22px;
+}
+
+.question-card {
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(135deg, #121414, #0b0c0c);
+  padding: clamp(22px, 5vw, 48px);
+  position: relative;
+  overflow: hidden;
+}
+
+.question-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--yellow);
+  transform-origin: left;
+  animation: lineReveal .8s ease;
+}
+
+@keyframes lineReveal {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.question-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 28px;
+  align-items: center;
+}
+
+.question-number {
+  color: var(--yellow);
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.question-type {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.question-text {
+  font-size: clamp(19px, 3vw, 27px);
+  line-height: 1.55;
+  font-weight: 500;
+  margin-bottom: 30px;
+  max-width: 780px;
+}
+
+.math-expression {
+  display: block;
+  color: var(--yellow);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 4vw, 37px);
+  margin: 20px 0 30px;
+  line-height: 1.4;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer-option {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.02);
+  color: var(--cream);
+  text-align: left;
+  padding: 17px;
+  min-height: 58px;
+  transition: .2s ease;
+}
+
+.answer-option:hover:not(:disabled) {
+  border-color: var(--yellow);
+  background: rgba(244,211,79,.07);
+  transform: translateY(-2px);
+}
+
+.answer-option .option-letter {
+  display: grid;
+  place-items: center;
+  min-width: 27px;
+  height: 27px;
+  border: 1px solid rgba(255,255,255,.2);
+  color: var(--yellow);
+  font-size: 11px;
+}
+
+.answer-option.selected {
+  border-color: var(--yellow);
+  background: rgba(244,211,79,.1);
+}
+
+.answer-option.correct {
+  border-color: #91c987;
+  background: rgba(145,201,135,.1);
+}
+
+.answer-option.incorrect {
+  border-color: #cf7777;
+  background: rgba(207,119,119,.1);
+}
+
+.answer-option:disabled {
+  cursor: default;
+}
+
+.feedback {
+  display: none;
+  padding: 18px;
+  margin-top: 20px;
+  border-left: 2px solid var(--yellow);
+  background: rgba(244,211,79,.06);
+  color: var(--cream);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.feedback.show {
+  display: block;
+  animation: fadeUp .4s ease both;
+}
+
+.feedback strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--yellow);
+}
+
+.question-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  margin-top: 26px;
+  flex-wrap: wrap;
+}
+
+.action-hint {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.btn {
+  border: 1px solid var(--yellow);
+  background: var(--yellow);
+  color: #101010;
+  padding: 15px 23px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: .25s;
+}
+
+.btn:hover:not(:disabled) {
+  background: transparent;
+  color: var(--yellow);
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--yellow);
+}
+
+.exam-footer {
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding: 22px 5%;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+/* =====================================
+   5. BIRTHDAY PAGE — DARK LUXURY
+===================================== */
+#birthday {
+  position: relative;
+  z-index: 3;
+  background:
+    radial-gradient(ellipse at 50% 5%, rgba(244,211,79,.09), transparent 40%),
+    #080909;
+  animation: birthdayFade 1.2s ease both;
+}
+
+@keyframes birthdayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.bday-nav {
+  padding: 25px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  z-index: 5;
+}
+
+.bday-nav small {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--muted);
+}
+
+.bday-hero {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-index {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--yellow);
+  margin-bottom: 28px;
+}
+
+.bday-big-title {
+  font-size: clamp(60px, 13vw, 155px);
+  font-weight: 900;
+  letter-spacing: -.085em;
+  line-height: .82;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 2;
+}
+
+.bday-big-title .outline {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(241,238,228,.62);
+}
+
+.bday-big-title .solid {
+  display: block;
+  color: var(--yellow);
+}
+
+.bday-intro {
+  margin-top: 38px;
+  max-width: 490px;
+  color: #aaa99f;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.bday-hero-bottom {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 60px;
+}
+
+.hero-caption {
+  font-size: 9px;
+  line-height: 1.9;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.scroll-cue {
+  color: var(--yellow);
+  font-size: 10px;
+  letter-spacing: 2px;
+  animation: cuePulse 1.7s ease-in-out infinite;
+}
+
+@keyframes cuePulse {
+  0%, 100% { opacity: .45; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+.decor-cat {
+  position: absolute;
+  right: 5%;
+  top: 20%;
+  width: clamp(100px, 20vw, 250px);
+  opacity: .9;
+  animation: catFloat 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(244,211,79,.1));
+}
+
+@keyframes catFloat {
+  0%, 100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-17px) rotate(-2deg); }
+}
+
+.bday-section {
+  padding: 100px 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: .7fr 1.3fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 45px;
+}
+
+.section-index {
+  color: var(--yellow);
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.section-title {
+  font-size: clamp(35px, 6vw, 70px);
+  font-weight: 900;
+  letter-spacing: -.055em;
+  line-height: .98;
+  text-transform: uppercase;
+}
+
+.section-description {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2;
+  max-width: 540px;
+  margin-top: 18px;
+}
+
+/* Photo gallery */
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 18px;
+}
+
+.photo-main,
+.photo-side {
+  min-height: 300px;
+  border: 1px solid var(--line);
+  background: #101212;
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-main {
+  min-height: 460px;
+}
+
+.photo-side-stack {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+}
+
+.photo-main img,
+.photo-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  inset: 0;
+  filter: saturate(.78);
+  transition: transform .7s ease, filter .7s ease;
+}
+
+.photo-main:hover img,
+.photo-side:hover img {
+  transform: scale(1.04);
+  filter: saturate(1);
+}
+
+.photo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 20px;
+  background:
+    linear-gradient(rgba(244,211,79,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,211,79,.035) 1px, transparent 1px),
+    #101212;
+  background-size: 22px 22px;
+}
+
+.photo-placeholder .photo-symbol {
+  font-size: 35px;
+  color: var(--yellow);
+}
+
+.photo-placeholder strong {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.photo-placeholder small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 20px 18px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  background: linear-gradient(transparent, rgba(0,0,0,.88));
+  z-index: 2;
+}
+
+/* Letters */
+.letter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.letter-card {
+  background: linear-gradient(145deg, #151716, #0d0f0e);
+  border: 1px solid rgba(244,211,79,.19);
+  padding: 27px;
+  min-height: 300px;
+  position: relative;
+  transition: transform .35s, border-color .35s;
+}
+
+.letter-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--yellow);
+}
+
+.letter-number {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--yellow);
+}
+
+.letter-card h3 {
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 35px 0 18px;
+  letter-spacing: -.5px;
+}
+
+.letter-card p {
+  color: #aaa99f;
+  font-size: 12px;
+  line-height: 2;
+  white-space: pre-line;
+}
+
+.letter-card .letter-end {
+  margin-top: 25px;
+  color: var(--yellow);
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+}
+
+/* Music */
+.music-card {
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  border: 1px solid var(--line);
+  background: #101212;
+  min-height: 310px;
+}
+
+.music-art {
+  padding: 30px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(244,211,79,.15), transparent 55%),
+    #151716;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+}
+
+.vinyl {
+  width: min(200px, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  margin: auto;
+  background: repeating-radial-gradient(circle, #151515 0 5px, #262626 6px 7px);
+  border: 1px solid rgba(244,211,79,.35);
+  position: relative;
+  animation: vinylSpin 12s linear infinite;
+}
+
+.vinyl::after {
+  content: "♪";
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 38%;
+  background: var(--yellow);
+  color: #080909;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+@keyframes vinylSpin {
+  to { transform: rotate(360deg); }
+}
+
+.music-content {
+  padding: clamp(22px, 4vw, 40px);
+}
+
+.music-content h3 {
+  font-size: clamp(27px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -1.5px;
+  margin: 15px 0;
+}
+
+.music-content p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-bottom: 22px;
+}
+
+.spotify-frame {
+  width: 100%;
+  height: 152px;
+  border: 0;
+  border-radius: 12px;
+  display: block;
+  background: #181818;
+}
+
+/* Final message */
+.last-note {
+  text-align: center;
+  padding: 130px 0;
+  background:
+    radial-gradient(ellipse at center, rgba(244,211,79,.08), transparent 55%);
+  border-top: 1px solid var(--line);
+}
+
+.last-note .big-heart {
+  font-size: 32px;
+  color: var(--yellow);
+  display: inline-block;
+  animation: heartGlow 2s ease-in-out infinite;
+}
+
+@keyframes heartGlow {
+  0%, 100% { transform: scale(1); opacity: .7; }
+  50% { transform: scale(1.16); opacity: 1; }
+}
+
+.last-note h2 {
+  font-size: clamp(38px, 8vw, 88px);
+  line-height: .98;
+  letter-spacing: -.07em;
+  margin: 25px 0;
+  text-transform: uppercase;
+}
+
+.last-note h2 span {
+  color: var(--yellow);
+}
+
+.last-note p {
+  max-width: 480px;
+  margin: auto;
+  color: var(--muted);
+  line-height: 2;
+  font-size: 13px;
+}
+
+.bday-footer {
+  border-top: 1px solid var(--line);
+  padding: 25px 5%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+/* Scroll animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Toast */
+#toast {
+  position: fixed;
+  z-index: 10000;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: var(--yellow);
+  color: #080909;
+  padding: 13px 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  opacity: 0;
+  pointer-events: none;
+  transition: .3s;
+  width: max-content;
+  max-width: 90%;
+  text-align: center;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* =====================================
+   6. MOBILE RESPONSIVE
+===================================== */
+@media (max-width: 760px) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+
+  .hero-grid,
+  .section-heading,
+  .photo-grid,
+  .music-card {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-hero {
+    padding-top: 60px;
+  }
+
+  .exam-title {
+    letter-spacing: -4px;
+  }
+
+  .math-decoration {
+    min-height: 190px;
+  }
+
+  .answers {
+    grid-template-columns: 1fr;
+  }
+
+  .question-card {
+    padding: 22px 17px;
+  }
+
+  .topbar-right {
+    font-size: 9px;
+    gap: 8px;
+  }
+
+  .bday-big-title {
+    letter-spacing: -.07em;
+  }
+
+  .decor-cat {
+    right: 3%;
+    top: 12%;
+    width: 110px;
+    opacity: .48;
+  }
+
+  .bday-hero {
+    min-height: 80vh;
+    padding: 80px 0 55px;
+  }
+
+  .bday-hero-bottom {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .bday-section {
+    padding: 70px 0;
+  }
+
+  .section-heading {
+    gap: 20px;
+  }
+
+  .photo-main {
+    min-height: 340px;
+  }
+
+  .photo-side {
+    min-height: 230px;
+  }
+
+  .photo-side-stack {
+    grid-template-rows: auto auto;
+  }
+
+  .letter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .letter-card {
+    min-height: auto;
+  }
+
+  .music-art {
+    min-height: 240px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .vinyl {
+    width: 150px;
+  }
+
+  .last-note {
+    padding: 90px 0;
+  }
+
+  .exam-footer {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- DECORATIVE SYMBOLS -->
+<div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+<div id="formulaRain" aria-hidden="true"></div>
+
+<!-- =====================================
+     EXAM PAGE
+===================================== -->
+<div id="exam">
+
+  <header class="topbar">
+    <div class="brand">MATH<span>LAB.</span></div>
+    <div class="topbar-right">
+      <span><i class="status-dot"></i> SYSTEM READY</span>
+      <span id="clock">07:00:00 WIB</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="exam-hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">MATHEMATICS • PRACTICE SESSION 01</div>
+          <h1 class="exam-title">
+            AFTER
+            <span>THE LIMIT.</span>
+          </h1>
+          <p class="hero-description">
+            Sebuah latihan singkat untuk menguji pemahaman konsep limit.
+            Baca setiap soal dengan teliti, pilih jawaban yang menurutmu
+            paling tepat, lalu lanjutkan ke soal berikutnya.
+          </p>
+
+          <div class="hero-stats">
+            <div>
+              <div class="stat-number">03</div>
+              <div class="stat-label">MAIN QUESTIONS</div>
+            </div>
+            <div>
+              <div class="stat-number">∞</div>
+              <div class="stat-label">POSSIBILITIES</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="math-decoration">
+          <div class="decor-small">FORMULA OF THE DAY / 001</div>
+          <div class="decor-formula">lim x → a f(x) = L</div>
+          <div class="decor-formula">∫ f(x) dx</div>
+          <div class="decor-formula">a² + b² = c²</div>
+          <div class="decor-small">FOCUS. THINK. SOLVE.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="exam-content">
+      <div class="wrap">
+        <div class="section-line">
+          <span>01 / LIMIT FUNCTION</span>
+          <span id="progressText">QUESTION 01 OF 03</span>
+        </div>
+
+        <div class="question-card" id="questionCard">
+          <div class="question-meta">
+            <span class="question-number" id="questionNumber">QUESTION 01</span>
+            <span class="question-type" id="questionType">MATHEMATICS • LIMIT</span>
+          </div>
+
+          <div class="question-text" id="questionText">
+            Hitung nilai limit berikut.
+          </div>
+
+          <div class="math-expression" id="questionExpression">
+            lim x → 2 (x² − 4)/(x − 2)
+          </div>
+
+          <div class="answers" id="answers"></div>
+
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+
+          <div class="question-actions">
+            <div class="action-hint" id="actionHint">
+              Pilih satu jawaban sebelum memeriksa hasil.
+            </div>
+            <div>
+              <button class="btn" id="checkBtn">CHECK ANSWER ↗</button>
+              <button class="btn hidden" id="nextBtn">NEXT QUESTION →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="exam-footer">
+    <span>MATHLAB. / INDEPENDENT PRACTICE</span>
+    <span>TAKE YOUR TIME. THINK CLEARLY.</span>
+  </footer>
+</div>
+
+<!-- =====================================
+     BIRTHDAY PAGE
+===================================== -->
+<main id="birthday" class="hidden">
+
+  <nav class="bday-nav">
+    <div class="brand">A<span>.</span>W / ARCHIVE</div>
+    <small>PERSONAL EDITION — 25.10</small>
+  </nav>
+
+  <!-- HERO -->
+  <section class="bday-hero">
+    <div class="wrap">
+      <div class="hero-index reveal">SPECIAL RELEASE / OCTOBER 25</div>
+
+      <h1 class="bday-big-title reveal">
+        <span class="outline">HAPPY</span>
+        <span class="solid">BIRTHDAY.</span>
+        <span class="outline">ANDIKA.</span>
+      </h1>
+
+      <p class="bday-intro reveal">
+        AN UNEXPECTED SIDE QUEST<br>
+
+        from: julili<br>
+
+        TO: ANDIKAWIJAYA<br>
+
+        HappyBday, ANDIKDIK. Hope this year brings you good things, good people, and plenty of reasons to be proud of yourself.
+      </p>
+
+      <div class="bday-hero-bottom reveal">
+        <div class="hero-caption">
+          ANDIKAWIJAYA<br>
+          OCTOBER 25 / A NEW CHAPTER
+        </div>
+        <a class="scroll-cue" href="#memories">SCROLL TO DISCOVER ↓</a>
+      </div>
+    </div>
+
+    <!-- Kucing dekoratif berbasis SVG, tidak butuh file gambar -->
+    <svg class="decor-cat" viewBox="0 0 220 240" fill="none"
+         xmlns="http://www.w3.org/2000/svg" aria-label="Ilustrasi kucing hitam">
+      <path d="M48 88 L35 25 L83 58 Q110 45 137 58 L185 25 L172 91
+               Q193 115 185 157 Q175 202 110 204 Q45 202 35 157
+               Q27 115 48 88Z" fill="#171918" stroke="#F4D34F" stroke-width="2"/>
+      <path d="M51 69 L45 39 L73 59" fill="#F4D34F" opacity=".8"/>
+      <path d="M168 69 L175 39 L147 59" fill="#F4D34F" opacity=".8"/>
+      <ellipse cx="78" cy="118" rx="8" ry="12" fill="#F4D34F"/>
+      <ellipse cx="142" cy="118" rx="8" ry="12" fill="#F4D34F"/>
+      <circle cx="80" cy="119" r="3" fill="#080909"/>
+      <circle cx="144" cy="119" r="3" fill="#080909"/>
+      <path d="M103 139 Q110 146 117 139" stroke="#F4D34F" stroke-width="2"/>
+      <path d="M110 130 L104 135 L116 135Z" fill="#F4D34F"/>
+      <path d="M95 149 Q110 161 125 149" stroke="#F4D34F" stroke-width="2" stroke-linecap="round"/>
+      <path d="M68 143 L25 137 M68 153 L25 158 M152 143 L195 137 M152 153 L195 158"
+            stroke="#F4D34F" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>
+      <path d="M78 188 Q110 173 142 188" stroke="#F4D34F" stroke-width="1.5" opacity=".6"/>
+      <text x="110" y="226" text-anchor="middle" fill="#F4D34F"
+            font-size="9" letter-spacing="3">LITTLE LUCKY CAT</text>
+    </svg>
+  </section>
+
+  <!-- MEMORIES -->
+  <section class="bday-section" id="memories">
+    <div class="wrap">
+      <div class="section-heading reveal">
+        <div class="section-index">01 / THE ARCHIVE</div>
+        <div>
+          <h2 class="section-title">A FEW<br>GOOD FRAMES.</h2>
+          <p class="section-description">
+            little things I wanted you to know, from January.
+          </p>
+        </div>
+      </div>
+
+      <div class="photo-grid reveal">
+        <div class="photo-main">
+          <img src="andika1.jpeg" alt="Foto Andika 1" 
+          onerror="this.style.display='none'">
+          <div class="photo-placeholder">
+            <div class="photo-symbol">✳</div>
+          </div>
+          <div class="photo-caption">FRAME 001 — THE MAIN CHARACTER</div>
+        </div>
+
+        <div class="photo-side-stack">
+          <div class="photo-side">
+            <img src="andika2.jpeg" alt="Foto Andika 2"
+                 onerror="this.style.display='none'">
+            <div class="photo-placeholder">
+              <div class="photo-symbol">✦</div>
+            </div>
+            <div class="photo-caption">FRAME 002 — this meant more to me than you knew</div>
+          </div>
+
+          <div class="photo-side">
+            <img src="andika3.jpeg" alt="Foto Andika 3"
+                 onerror="this.style.display='none'">
+            <div class="photo-placeholder">
+              <div class="photo-symbol">✧</div>
+            </div>
+            <div class="photo-caption">FRAME 003 — things left unsaid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LETTERS -->
+  <section class="bday-section" id="letters">
+    <div class="wrap">
+      <div class="section-heading reveal">
+        <div class="section-index">02 / THE LETTERS</div>
+        <div>
+          <h2 class="section-title">THINGS<br>WORTH SAYING.</h2>
+          <p class="section-description">
+            kalo aku nulis, pasti susah dibaca, nd you'd probably throw it away anyway:)<br>
+
+            so i made u a website instead. 
+            
+            at least this one's readable.
+          </p>
+        </div>
+      </div>
+
+      <div class="letter-grid">
+        <article class="letter-card reveal">
+          <div class="letter-number">NOTE NO. 01</div>
+          <h3>For your new chapter.</h3>
+          <p>
+hippybisdiy andikuy
+
+semangat TKA, firasatku sih fix istimewa semua
+
+i hope life will be kind to you, kalo jawab orang ga harus dipikir dulu kok biar lucu.
+          </p>
+          <div class="letter-end">— a little wish.</div>
+        </article>
+
+        <article class="letter-card reveal">
+          <div class="letter-number">NOTE NO. 02</div>
+          <h3>Don't forget this.</h3>
+          <p>
+Semoga kamu nggak terlalu keras sama diri sendiri.
+
+semoga semua yang kamu mau dipermudah.
+ndddd selalu bahagia setiap harinya, jangan bersedih dan jangan pernah putus asa.
+
+I hope you give yourself the same kindness you give to other people.
+          </p>
+          <div class="letter-end">— take it easy.</div>
+        </article>
+
+        <article class="letter-card reveal">
+          <div class="letter-number">NOTE NO. 03</div>
+          <h3>One last thing.</h3>
+          <p>
+thankiu uda tst fisika januari itu. kalo hari itu jalan beda dikiiit ajaa, yah pasti beda.
+
+I guess January gave me more than just a physics test. It gave me the chance to know u.
+
+Enjoy your day, Andika. You deserve good things, too.
+          </p>
+          <div class="letter-end">— sincerely, julia.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MUSIC -->
+  <section class="bday-section" id="music">
+    <div class="wrap">
+      <div class="section-heading reveal">
+        <div class="section-index">03 / SOUNDTRACK</div>
+        <div>
+          <h2 class="section-title">LET THE.<br>SONG SPEAK.</h2>
+          <p class="section-description">
+            some songs say what words cannot.
+          </p>
+        </div>
+      </div>
+
+      <div class="music-card reveal">
+        <div class="music-art">
+          <div class="eyebrow">NOW / PLAYING</div>
+          <div class="vinyl"></div>
+          <div class="decor-small">ONE TRACK. ONE MEMORY.</div>
+        </div>
+
+        <div class="music-content">
+          <div class="eyebrow">THE BIRTHDAY SOUNDTRACK</div>
+          <h3>A LITTLE<br>SONG FOR YOU.</h3>
+          <p>
+            for the feelings i never named.
+          </p>
+
+          <iframe
+            class="spotify-frame"
+            src="https://open.spotify.com/embed/track/69uJi5QsBtqlYkGURTBli8?utm_source=generator"
+            title="Spotify birthday soundtrack"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENDING -->
+  <section class="last-note">
+    <div class="wrap reveal">
+      <div class="big-heart">✳</div>
+      <div class="eyebrow">END OF THIS LITTLE PAGE / BEGINNING OF A NEW YEAR</div>
+      <h2>HAVE A<br><span>GOOD ONE.</span></h2>
+      <p>
+       Special website made 4 u. Nothing complicated. 
+       Just a little something to make your birthday a bit different.
+      </p>
+    </div>
+  </section>
+
+  <footer class="bday-footer">
+    <span class="brand">A/W<span class="yellow">.</span></span>
+    <span class="small">A LITTLE WEBSITE, MADE JUST FOR YOU.</span>
+    <span class="small">25.10 — END.</span>
+  </footer>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================
+   1. CLOCK — WIB
+===================================== */
+function updateClock() {
+  const clock = document.getElementById("clock");
+  if (!clock) return;
+
+  clock.textContent = new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  }).format(new Date()) + " WIB";
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+
+/* =====================================
+   2. CUSTOM CURSOR
+===================================== */
+const cursorDot = document.getElementById("cursorDot");
+const cursorRing = document.getElementById("cursorRing");
+
+document.addEventListener("mousemove", function(event) {
+  cursorDot.style.left = event.clientX + "px";
+  cursorDot.style.top = event.clientY + "px";
+
+  cursorRing.style.left = event.clientX + "px";
+  cursorRing.style.top = event.clientY + "px";
+});
+
+document.querySelectorAll("button, a, .answer-option").forEach(function(item) {
+  item.addEventListener("mouseenter", function() {
+    cursorRing.style.width = "43px";
+    cursorRing.style.height = "43px";
+  });
+
+  item.addEventListener("mouseleave", function() {
+    cursorRing.style.width = "28px";
+    cursorRing.style.height = "28px";
+  });
+});
+
+
+/* =====================================
+   3. FLOATING SYMBOLS
+===================================== */
+const floatLayer = document.getElementById("floatLayer");
+const floatingSymbols = [
+  "∫", "∑", "π", "∞", "√", "x²", "÷", "±", "∆", "∂", "∴", "θ"
+];
+
+for (let i = 0; i < 25; i++) {
+  const symbol = document.createElement("span");
+  symbol.className = "float-symbol";
+  symbol.textContent = floatingSymbols[
+    Math.floor(Math.random() * floatingSymbols.length)
+  ];
+
+  symbol.style.left = Math.random() * 100 + "%";
+  symbol.style.fontSize = (12 + Math.random() * 22) + "px";
+  symbol.style.animationDuration = (18 + Math.random() * 28) + "s";
+  symbol.style.animationDelay = (-Math.random() * 30) + "s";
+
+  floatLayer.appendChild(symbol);
+}
+
+
+/* =====================================
+   4. TOAST MESSAGE
+===================================== */
+const toast = document.getElementById("toast");
+let toastTimer;
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() {
+    toast.classList.remove("show");
+  }, 2400);
+}
+
+
+/* =====================================
+   5. QUESTION DATA
+===================================== */
+const questions = [
+  {
+    type: "MATHEMATICS • LIMIT",
+    text: "Tentukan nilai limit fungsi aljabar berikut.",
+    expression: "lim x → 2 (x² − 4)/(x − 2)",
+    choices: ["2", "3", "4", "5"],
+    answer: 2,
+    explanation:
+      "Faktorkan x² − 4 menjadi (x − 2)(x + 2). Setelah faktor (x − 2) dicoret, tersisa x + 2. Substitusikan x = 2, sehingga hasilnya 4."
+  },
+  {
+    type: "MATHEMATICS • TRIGONOMETRY",
+    text: "Dengan sudut dalam satuan radian, berapakah nilai limit berikut?",
+    expression: "lim x → 0 (sin x)/x",
+    choices: ["0", "1", "−1", "Tidak terdefinisi"],
+    answer: 1,
+    explanation:
+      "Ini adalah limit trigonometri dasar yang bernilai 1 ketika x mendekati 0, dengan x dinyatakan dalam radian."
+  },
+  {
+    type: "MATHEMATICS • LIMIT",
+    text: "Hitung nilai limit fungsi berikut.",
+    expression: "lim x → 1 (x² + x − 2)/(x − 1)",
+    choices: ["1", "2", "3", "4"],
+    answer: 2,
+    explanation:
+      "Faktorkan x² + x − 2 menjadi (x + 2)(x − 1). Setelah faktor (x − 1) dicoret, tersisa x + 2. Substitusikan x = 1, sehingga hasilnya 3."
+  }
+];
+
+/* Kuis tambahan ekonomi jika jawaban limit salah */
+const economicsQuestions = [
+  {
+    type: "BONUS ROUND • ECONOMICS",
+    text: "Ketika harga suatu barang naik, sementara faktor lain tetap, jumlah barang yang diminta biasanya akan...",
+    expression: "HARGA ↑  →  PERMINTAAN ?",
+    choices: [
+      "Meningkat",
+      "Menurun",
+      "Tetap selalu",
+      "Tidak bisa berubah"
+    ],
+    answer: 1,
+    explanation:
+      "Menurut hukum permintaan, jika faktor lain tetap, kenaikan harga biasanya menyebabkan jumlah barang yang diminta menurun."
+  },
+  {
+    type: "BONUS ROUND • ECONOMICS",
+    text: "Apa yang dimaksud dengan inflasi?",
+    expression: "INFLATION = ?",
+    choices: [
+      "Turunnya semua harga",
+      "Naiknya nilai uang",
+      "Kenaikan harga barang dan jasa secara umum dan terus-menerus",
+      "Bertambahnya jumlah toko"
+    ],
+    answer: 2,
+    explanation:
+      "Inflasi adalah kenaikan harga barang dan jasa secara umum dan berkelanjutan. Akibatnya, daya beli uang dapat menurun."
+  },
+  {
+    type: "BONUS ROUND • ECONOMICS",
+    text: "Biaya peluang (opportunity cost) adalah...",
+    expression: "THE NEXT BEST ALTERNATIVE",
+    choices: [
+      "Seluruh uang yang dimiliki",
+      "Biaya untuk membuat laporan",
+      "Keuntungan dari semua pilihan",
+      "Nilai pilihan terbaik yang dikorbankan"
+    ],
+    answer: 3,
+    explanation:
+      "Biaya peluang adalah nilai alternatif terbaik yang dilepaskan ketika seseorang memilih satu pilihan dibandingkan pilihan lainnya."
+  }
+];
+
+
+/* =====================================
+   6. QUIZ STATE
+===================================== */
+let current = 0;
+let selected = null;
+let checked = false;
+let inBonus = false;
+let needsBonus = false;
+let bonusIndex = 0;
+
+const questionNumber = document.getElementById("questionNumber");
+const questionType = document.getElementById("questionType");
+const questionText = document.getElementById("questionText");
+const questionExpression = document.getElementById("questionExpression");
+const answersContainer = document.getElementById("answers");
+const feedback = document.getElementById("feedback");
+const progressText = document.getElementById("progressText");
+const actionHint = document.getElementById("actionHint");
+const checkBtn = document.getElementById("checkBtn");
+const nextBtn = document.getElementById("nextBtn");
+const questionCard = document.getElementById("questionCard");
+
+
+/* =====================================
+   7. RENDER QUESTION
+===================================== */
+function renderQuestion() {
+  selected = null;
+  checked = false;
+
+  const question = inBonus
+    ? economicsQuestions[bonusIndex]
+    : questions[current];
+
+  questionNumber.textContent = inBonus
+    ? "EXTRA QUESTION"
+    : "QUESTION " + String(current + 1).padStart(2, "0");
+
+  questionType.textContent = question.type;
+  questionText.textContent = question.text;
+  questionExpression.textContent = question.expression;
+
+  progressText.textContent = inBonus
+    ? "BONUS ROUND / ECONOMICS"
+    : "QUESTION " + String(current + 1).padStart(2, "0") + " OF 03";
+
+  answersContainer.innerHTML = "";
+  feedback.className = "feedback";
+  feedback.innerHTML = "";
+
+  checkBtn.classList.remove("hidden");
+  checkBtn.disabled = true;
+  nextBtn.classList.add("hidden");
+
+  actionHint.textContent = inBonus
+    ? "Jawab satu pertanyaan ekonomi tambahan."
+    : "Pilih satu jawaban sebelum memeriksa hasil.";
+
+  question.choices.forEach(function(choice, index) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer-option";
+
+    const letter = document.createElement("span");
+    letter.className = "option-letter";
+    letter.textContent = String.fromCharCode(65 + index);
+
+    const label = document.createElement("span");
+    label.textContent = choice;
+
+    button.appendChild(letter);
+    button.appendChild(label);
+
+    button.addEventListener("click", function() {
+      if (checked) return;
+
+      selected = index;
+
+      document.querySelectorAll(".answer-option").forEach(function(option) {
+        option.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+      checkBtn.disabled = false;
+      actionHint.textContent = "Jawaban dipilih. Periksa hasilnya.";
+    });
+
+    answersContainer.appendChild(button);
+  });
+
+  questionCard.style.animation = "none";
+  void questionCard.offsetWidth;
+  questionCard.style.animation = "fadeUp .45s ease both";
+}
+
+
+/* Animasi masuk kartu soal */
+const animationStyle = document.createElement("style");
+animationStyle.textContent = `
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}`;
+document.head.appendChild(animationStyle);
+
+
+/* =====================================
+   8. CHECK ANSWER
+===================================== */
+checkBtn.addEventListener("click", function() {
+  if (selected === null || checked) return;
+
+  checked = true;
+
+  const question = inBonus
+    ? economicsQuestions[bonusIndex]
+    : questions[current];
+
+  const isCorrect = selected === question.answer;
+  const optionButtons = document.querySelectorAll(".answer-option");
+
+  optionButtons.forEach(function(button, index) {
+    button.disabled = true;
+
+    if (index === question.answer) {
+      button.classList.add("correct");
+    }
+
+    if (index === selected && !isCorrect) {
+      button.classList.add("incorrect");
+    }
+  });
+
+  if (!inBonus) {
+    /* Soal utama yang salah akan memicu bonus ekonomi */
+    needsBonus = !isCorrect;
+  }
+
+  feedback.innerHTML =
+    "<strong>" +
+    (isCorrect ? "✓ " : "↗ ") +
+    (isCorrect ? "JAWABAN BENAR" : "PEMBAHASAN") +
+    "</strong>" +
+    question.explanation;
+
+  feedback.classList.add("show");
+
+  checkBtn.classList.add("hidden");
+  nextBtn.classList.remove("hidden");
+
+  if (inBonus) {
+    nextBtn.textContent = current === questions.length - 1
+      ? "FINISH SESSION →"
+      : "BACK TO MATHEMATICS →";
+
+    actionHint.textContent = isCorrect
+      ? "Bonus selesai. Lanjutkan ke tahap berikutnya."
+      : "Pelajari pembahasannya, lalu lanjutkan.";
+  } else {
+    nextBtn.textContent = needsBonus
+      ? "TAKE BONUS QUIZ →"
+      : current === questions.length - 1
+        ? "FINISH SESSION →"
+        : "NEXT QUESTION →";
+
+    actionHint.textContent = needsBonus
+      ? "Jawaban kurang tepat. Ada satu kuis ekonomi tambahan."
+      : "Jawaban sudah diperiksa. Kamu bisa melanjutkan.";
+  }
+});
+
+
+/* =====================================
+   9. NEXT QUESTION / BONUS FLOW
+===================================== */
+nextBtn.addEventListener("click", function() {
+  if (!checked) return;
+
+  if (inBonus) {
+    /* Bonus tidak memicu bonus baru. Kembali ke alur utama. */
+    inBonus = false;
+
+    if (current < questions.length - 1) {
+      current++;
+      renderQuestion();
+      document.querySelector(".exam-content").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    } else {
+      openBirthday();
+    }
+
+    return;
+  }
+
+  if (needsBonus) {
+    /* Soal utama salah: tampilkan satu soal ekonomi. */
+    needsBonus = false;
+    inBonus = true;
+    bonusIndex = current % economicsQuestions.length;
+
+    renderQuestion();
+
+    document.querySelector(".exam-content").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    return;
+  }
+
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+
+    document.querySelector(".exam-content").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  } else {
+    openBirthday();
+  }
+});
+
+
+/* =====================================
+   10. FALLING MATH FORMULAS
+===================================== */
+const formulaRain = document.getElementById("formulaRain");
+
+const fallingFormulas = [
+  "lim x → 0 sin x/x",
+  "∫ f(x) dx",
+  "E = mc²",
+  "a² + b² = c²",
+  "∑ n = n(n+1)/2",
+  "f'(x) = dy/dx",
+  "x = (−b ± √D)/2a",
+  "P(A) = n(A)/n(S)",
+  "y = mx + c",
+  "π ≈ 3.14159",
+  "√(a² + b²)",
+  "Δ = b² − 4ac",
+  "logₐ x = y",
+  "F = ma",
+  "v = s/t",
+  "W = F × s",
+  "Q = mcΔT",
+  "PV = nRT",
+  "TR = P × Q",
+  "TC = TFC + TVC",
+  "π = TR − TC",
+  "MR = ΔTR/ΔQ",
+  "MC = ΔTC/ΔQ",
+  "Qd = a − bP",
+  "Qs = a + bP",
+  "Y = C + I + G + (X − M)",
+  "C = a + bY",
+  "S = Y − C",
+  "MPC + MPS = 1",
+  "GDP = C + I + G + NX",
+  "inflation ↑",
+  "opportunity cost",
+  "∫ₐᵇ f(x) dx",
+  "lim x → ∞",
+  "sin² θ + cos² θ = 1",
+  "tan θ = sin θ/cos θ",
+  "x̄ = Σx/n",
+  "σ² = Σ(x − μ)²/n",
+  "A = πr²",
+  "V = l × w × h",
+  "d = √((x₂−x₁)² + (y₂−y₁)²)"
+];
+
+let rainInterval = null;
+
+function dropFormula() {
+  if (!document.body.classList.contains("formula-active")) return;
+
+  const formula = document.createElement("span");
+  formula.className = "falling-formula";
+  formula.textContent = fallingFormulas[
+    Math.floor(Math.random() * fallingFormulas.length)
+  ];
+
+  formula.style.left = Math.random() * 100 + "vw";
+  formula.style.fontSize = (12 + Math.random() * 15) + "px";
+  formula.style.animationDuration = (7 + Math.random() * 9) + "s";
+  formula.style.opacity = (0.3 + Math.random() * 0.55).toFixed(2);
+
+  formulaRain.appendChild(formula);
+
+  formula.addEventListener("animationend", function() {
+    formula.remove();
+  });
+}
+
+function startFormulaRain() {
+  document.body.classList.add("formula-active");
+
+  if (rainInterval) clearInterval(rainInterval);
+
+  /* Banyak rumus langsung muncul saat halaman ulang tahun terbuka */
+  for (let i = 0; i < 28; i++) {
+    setTimeout(dropFormula, i * 100);
+  }
+
+  /* Rumus terus berjatuhan selama halaman dibuka */
+  rainInterval = setInterval(dropFormula, 420);
+}
+
+
+/* =====================================
+   11. OPEN BIRTHDAY PAGE
+===================================== */
+function openBirthday() {
+  document.getElementById("exam").classList.add("hidden");
+
+  const birthday = document.getElementById("birthday");
+  birthday.classList.remove("hidden");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "instant"
+  });
+
+  startFormulaRain();
+  observeReveals();
+
+  showToast("SESSION COMPLETE. HAPPY BIRTHDAY, ANDIKA.");
+
+  /* Mulai animasi reveal untuk elemen yang terlihat */
+  setTimeout(function() {
+    birthday.querySelectorAll(".reveal").forEach(function(element) {
+      const rect = element.getBoundingClientRect();
+
+      if (rect.top < window.innerHeight) {
+        element.classList.add("in");
+      }
+    });
+  }, 150);
+}
+
+
+/* =====================================
+   12. SCROLL REVEAL ANIMATIONS
+===================================== */
+let revealObserver;
+
+function observeReveals() {
+  if (!("IntersectionObserver" in window)) {
+    document.querySelectorAll("#birthday .reveal").forEach(function(el) {
+      el.classList.add("in");
+    });
+    return;
+  }
+
+  if (revealObserver) revealObserver.disconnect();
+
+  revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12
+  });
+
+  document.querySelectorAll("#birthday .reveal:not(.in)").forEach(function(el) {
+    revealObserver.observe(el);
+  });
+}
+
+
+/* =====================================
+   13. START
+===================================== */
+renderQuestion();
+</script>
+</body>
+</html>
